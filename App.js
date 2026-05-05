@@ -1,44 +1,35 @@
 import { StyleSheet, Text, View, Image, ImageBackground } from 'react-native';
 import GameCard from './components/GameCard';
+import dados from './assets/dados.json'
+import { SectionList } from 'react-native-web';
 
 export default function App() {
 
-  const jogos = [
-    {
-      "id": 1,
-      "fase": "Fase de grupos",
-      "grupo": "A",
-      "data_et": "2026-06-11",
-      "hora_et": "15:00",
-      "data_brasilia": "2026-06-11",
-      "hora_brasilia": "16:00",
-      "time_casa": "México",
-      "sigla_casa": "MEX",
-      "time_fora": "África do Sul",
-      "sigla_fora": "RSA",
-      "confronto": "México x África do Sul",
-      "estadio": "Estádio Azteca",
-      "cidade": "Cidade do México",
-      "pais": "México"
-    },
-    {
-      "id": 2,
-      "fase": "Fase de grupos",
-      "grupo": "A",
-      "data_et": "2026-06-11",
-      "hora_et": "22:00",
-      "data_brasilia": "2026-06-11",
-      "hora_brasilia": "23:00",
-      "time_casa": "Coreia do Sul",
-      "sigla_casa": "KOR",
-      "time_fora": "Tchéquia",
-      "sigla_fora": "CZE",
-      "confronto": "Coreia do Sul x Tchéquia",
-      "estadio": "Estádio Akron",
-      "cidade": "Guadalajara",
-      "pais": "México"
+  const jogos = dados.jogos;
+
+  const agruparPorData = (jogos) => {
+    return jogos.reduce((acc, jogo) => {
+
+      const data = jogo.data_brasilia;
+      if (!acc[data]) {
+        acc[data] = [];
+      }
+
+      acc[data].push(jogo);
+
+      return acc;
+
+    }, {});
+  }
+
+  const jogosAgrupados = agruparPorData(jogos);
+
+  const jogosTratados = Object.keys(jogosAgrupados).map(data => {
+    return {
+      title: data,
+      data: jogosAgrupados[data]
     }
-  ]
+  });
 
   return (
     <ImageBackground style={styles.container}
@@ -49,16 +40,27 @@ export default function App() {
 
       <Text style={styles.title}>CALENDÁRIO</Text>
 
-      <View style={styles.card}>
+      <SectionList
+        sections={jogosTratados}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={() => null}
+        renderSectionHeader={({ section }) => (
+          <View style={styles.card}>
+            <Text style={styles.data}>
+              {section.title} 
+            </Text>
+            {
+              section.data.map((jogo) => (
+                <GameCard key={jogo.id} game={jogo} />
+              ))
+            }
+          </View>
+          )
+        }
 
-        <Text style={styles.data}>
-          {jogos[0].data_brasilia.split('-').slice(1).reverse().join('/')}
-        </Text>
 
-        <GameCard game={jogos[0]}/>
-        <GameCard game={jogos[1]}/>
+      />
 
-      </View>
     </ImageBackground>
   );
 }
