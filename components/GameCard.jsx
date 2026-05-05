@@ -1,13 +1,9 @@
 import { StyleSheet, Text, View, Image } from 'react-native';
+import { TEAM_FLAGS } from '../utils/flagMapping';
 
 export default function GameCard({ game }) {
-
-    const flags = {
-        MEX: require("../assets/jogos/mexico.png"),
-        RSA: require("../assets/jogos/south africa.png"),
-        KOR: require("../assets/jogos/south korea.png"),
-        CZE: require("../assets/jogos/czech republic.png"),
-    }
+    const timeCasa = TEAM_FLAGS[game.sigla_casa];
+    const timeFora = TEAM_FLAGS[game.sigla_fora];
 
     return (
         <View style={styles.jogo}>
@@ -19,10 +15,7 @@ export default function GameCard({ game }) {
             <View style={styles.linhaPrincipal}>
 
                 <View style={styles.time}>
-                    <Image
-                        style={styles.bandeira}
-                        source={flags[game.sigla_casa]}
-                    />
+                    {timeCasa && <Image source={timeCasa} style={styles.bandeira} />}
                     <Text style={styles.sigla}>{game.sigla_casa}</Text>
                 </View>
 
@@ -32,11 +25,8 @@ export default function GameCard({ game }) {
                 </View>
 
                 <View style={styles.time}>
+                    {timeFora && <Image source={timeFora} style={styles.bandeira} />}
                     <Text style={styles.sigla}>{game.sigla_fora}</Text>
-                    <Image
-                        style={styles.bandeira}
-                        source={flags[game.sigla_fora]}
-                    />
                 </View>
 
             </View>

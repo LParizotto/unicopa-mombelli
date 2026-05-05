@@ -1,7 +1,6 @@
-import { StyleSheet, Text, View, Image, ImageBackground } from 'react-native';
+import { StyleSheet, Text, View, Image, ImageBackground, SectionList } from 'react-native';
 import GameCard from './components/GameCard';
 import dados from './assets/dados.json'
-import { SectionList } from 'react-native-web';
 
 export default function App() {
 
