@@ -9,7 +9,10 @@ export default function App() {
   const agruparPorData = (jogos) => {
     return jogos.reduce((acc, jogo) => {
 
-      const data = jogo.data_brasilia;
+      const data = new Date(jogo.data_brasilia).toLocaleDateString('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+      });
       if (!acc[data]) {
         acc[data] = [];
       }
