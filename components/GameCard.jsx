@@ -5,8 +5,11 @@ export default function GameCard({ game }) {
     const timeCasa = TEAM_FLAGS[game.sigla_casa];
     const timeFora = TEAM_FLAGS[game.sigla_fora];
 
+    const jogoBrasil = game.sigla_casa === 'BRA' || game.sigla_fora === 'BRA'
+
+
     return (
-        <View style={styles.jogo}>
+        <View style={ jogoBrasil ? styles.brasil : styles.jogo }>
 
             <Text style={styles.grupo}>
                 GRUPO {game.grupo}  {game.confronto}
@@ -48,6 +51,14 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: '#1e2d3d',
         paddingBottom: 15
+    },
+    brasil: {
+        borderColor: '#f5f114',
+        marginBottom: 20,
+        borderLeftWidth: 1,
+        borderTopWidth: 1,
+        borderRadius: 5,
+        padding: 10,
     },
     grupo: {
         color: '#8fa3b8',
