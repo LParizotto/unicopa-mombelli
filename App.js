@@ -18,6 +18,14 @@ export default function App() {
 
       acc[data].push(jogo);
 
+      const ordenacaoHorario = (a, b) => {
+        const horaA = a.hora_brasilia.split(':').map(Number);
+        const horaB = b.hora_brasilia.split(':').map(Number);
+        return horaA[0] - horaB[0] || horaA[1] - horaB[1];
+      }
+
+      acc[data].sort(ordenacaoHorario);
+      
       return acc;
 
     }, {});
