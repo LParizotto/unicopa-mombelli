@@ -1,6 +1,7 @@
 import { StyleSheet, Text, View, Image, ImageBackground, SectionList } from 'react-native';
 import GameCard from './components/GameCard';
 import dados from './assets/dados.json'
+import { formatarData } from './utils/DateFormat';
 
 export default function App() {
 
@@ -9,10 +10,8 @@ export default function App() {
   const agruparPorData = (jogos) => {
     return jogos.reduce((acc, jogo) => {
 
-      const data = new Date(jogo.data_brasilia).toLocaleDateString('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-      });
+      const data = formatarData(jogo.data_brasilia);
+
       if (!acc[data]) {
         acc[data] = [];
       }
