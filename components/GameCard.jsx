@@ -9,7 +9,7 @@ export default function GameCard({ game }) {
 
     const semTimesDefinidos = !timeCasa || !timeFora;
 
-    if(semTimesDefinidos){
+    if (semTimesDefinidos) {
         return (
             <View style={styles.jogo}>
                 <Text style={styles.grupo}>
@@ -21,7 +21,7 @@ export default function GameCard({ game }) {
     }
 
     return (
-        <View style={ jogoBrasil ? styles.brasil : styles.jogo }>
+        <View style={jogoBrasil ? styles.brasil : styles.jogo}>
 
             <Text style={styles.grupo}>
                 GRUPO {game.grupo}  {game.confronto}
@@ -35,7 +35,9 @@ export default function GameCard({ game }) {
                 </View>
 
                 <View style={styles.horario}>
-                    <Text style={styles.hora}>{game.hora_brasilia}</Text>
+                    <Text style={styles.hora}>
+                        {game.hora_brasilia ? game.hora_brasilia.slice(0, 5) : ''}
+                    </Text>
                     <Text style={styles.subTitulo}>VS</Text>
                 </View>
 
