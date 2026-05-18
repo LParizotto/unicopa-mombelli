@@ -1,10 +1,15 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import GameCard from './GameCard';
+import { formatarData } from '../utils/DateFormat';
 
 export default function DiaCard({ data, jogos }) {
+
+  const hoje = formatarData(new Date());
+  const isHoje = data === hoje;
+  
   return (
-    <View style={styles.card}>
+    <View style={[styles.card, isHoje && { backgroundColor: '#1a2e44', borderColor: '#c7c7c7', borderWidth: 1 }]}>
       <Text style={styles.data}>
         {data}
       </Text>
