@@ -1,8 +1,8 @@
 import { StyleSheet, Text, View, Image, ImageBackground, SectionList } from 'react-native';
 import { formatarData } from './utils/DateFormat';
 import DiaCard from './components/DiaCard';
-import { useEffect, useState } from 'react';
 import { supabase } from './utils/supabase';
+import { useEffect, useState } from 'react';
 
 export default function App() {
 
@@ -14,7 +14,7 @@ export default function App() {
       const { data, error } = await supabase
         .from('jogos')
         .select('*')
-        .order('data_brasilia', { ascending: false })
+        .order('data_brasilia', { ascending: true })
 
         if(!error){
           setJogos(data)
@@ -24,7 +24,6 @@ export default function App() {
 
     carregarJogos()
   }, [])
-
   const agruparPorData = (jogos) => {
     return jogos.reduce((acc, jogo) => {
 

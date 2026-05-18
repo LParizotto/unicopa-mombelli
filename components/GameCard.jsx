@@ -7,6 +7,18 @@ export default function GameCard({ game }) {
 
     const jogoBrasil = game.sigla_casa === 'BRA' || game.sigla_fora === 'BRA'
 
+    const semTimesDefinidos = !timeCasa || !timeFora;
+
+    if(semTimesDefinidos){
+        return (
+            <View style={styles.jogo}>
+                <Text style={styles.grupo}>
+                    GRUPO {game.grupo}  {game.confronto}
+                </Text>
+                <Text style={styles.subTitulo}>A definir...</Text>
+            </View>
+        )
+    }
 
     return (
         <View style={ jogoBrasil ? styles.brasil : styles.jogo }>
