@@ -1,31 +1,89 @@
+import React, { useState } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
+import { IconButton } from 'react-native-paper';
 import { TEAM_FLAGS } from '../utils/flagMapping';
+import { supabase } from '../utils/supabase';
 
 export default function GameCard({ game }) {
+    const [isFavorited, setIsFavorited] = useState(false);
+
     const timeCasa = TEAM_FLAGS[game.sigla_casa];
     const timeFora = TEAM_FLAGS[game.sigla_fora];
 
-    const jogoBrasil = game.sigla_casa === 'BRA' || game.sigla_fora === 'BRA'
-
+    const jogoBrasil = game.sigla_casa === 'BRA' || game.sigla_fora === 'BRA';
     const semTimesDefinidos = !timeCasa || !timeFora;
+
+    const toggleFavorite = async () => {
+        const previousState = isFavorited;
+
+        setIsFavorited(!previousState);
+
+        try {
+            if (!previousState) {
+                const { error } = await supabase
+                    .from('favoritos')
+                    .insert([
+                        {
+                            id_usuario: idDoUsuarioLogado,
+                            id_jogo: idDoJogoAtual
+                        }
+                    ]);
+
+                if (error) throw error;
+
+            } else {
+                const { error } = await supabase
+                    .from('favoritos')
+                    .delete()
+                    // .eq('id_usuario', idDoUsuarioLogado) ainda não criei a parte de login do usuário 
+                    // .eq('id_jogo', idDoJogoAtual); msm coisa 
+
+                if (error) throw error;
+            }
+
+        } catch (error) {   
+            console.error('Erro ao atualizar favorito:', error.message);
+            setIsFavorited(previousState);
+            alert('Não foi possível salvar seu favorito. Tente novamente.');
+        }
+    };
 
     if (semTimesDefinidos) {
         return (
             <View style={styles.jogo}>
-                <Text style={styles.grupo}>
-                    GRUPO {game.grupo}  {game.confronto}
-                </Text>
+                <View style={styles.topoCard}>
+                    <Text style={styles.grupo}>
+                        GRUPO {game.grupo}  {game.confronto}
+                    </Text>
+                    <IconButton
+                        icon={isFavorited ? 'heart' : 'heart-outline'}
+                        iconColor={isFavorited ? '#ee2c3c' : '#8fa3b8'}
+                        size={20}
+                        style={styles.botaoFavorito}
+                        onPress={toggleFavorite}
+                    />
+                </View>
                 <Text style={styles.subTitulo}>A definir...</Text>
             </View>
-        )
+        );
     }
 
     return (
         <View style={jogoBrasil ? styles.brasil : styles.jogo}>
 
-            <Text style={styles.grupo}>
-                GRUPO {game.grupo}  {game.confronto}
-            </Text>
+            <View style={styles.topoCard}>
+                <Text style={styles.grupo}>
+                    GRUPO {game.grupo}  {game.confronto}
+                </Text>
+
+                <IconButton
+                    icon={isFavorited ? 'heart' : 'heart-outline'}
+                    iconColor={isFavorited ? '#ee2c3c' : '#8fa3b8'}
+                    size={20}
+                    style={styles.botaoFavorito}
+                    onPress={toggleFavorite}
+                />
+            </View>
 
             <View style={styles.linhaPrincipal}>
 
@@ -74,10 +132,19 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         padding: 10,
     },
+    topoCard: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        marginBottom: 5,
+    },
+    botaoFavorito: {
+        margin: 0,
+        padding: 0,
+    },
     grupo: {
         color: '#8fa3b8',
         fontSize: 12,
-        marginBottom: 10
     },
     linhaPrincipal: {
         flexDirection: 'row',

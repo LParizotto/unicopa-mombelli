@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image, ImageBackground, SectionList } from 'react-native';
+import { StyleSheet, Text, Image, ImageBackground, SectionList } from 'react-native';
 import { formatarData } from './utils/DateFormat';
 import DiaCard from './components/DiaCard';
 import { supabase } from './utils/supabase';
@@ -16,14 +16,44 @@ export default function App() {
         .select('*')
         .order('data_brasilia', { ascending: true })
 
-        if(!error){
-          setJogos(data)
-        }
+      if(!error){
+        setJogos(data)
+      }
 
     }
 
     carregarJogos()
+
+    async function inserirUsuario() {
+      const { data, error } = await supabase
+        .from('usuarios')
+        .insert({
+          nome: 'Luís Fernando ',
+          email: 'luis.fernando@example.com',
+          senha: 'senha123',
+          telefone: '46999999999',
+          data_nascimento: '2000-01-01',
+          ra: '123456',
+
+          nome: 'João Silva',
+          email: 'joao.silva@example.com',
+          senha: 'senha123',
+          telefone: '46999999999',
+          data_nascimento: '2000-01-01',
+          ra: '123457',
+        })
+
+      if (!error) {
+        console.log('Usuário inserido com sucesso: ', data);
+      } else {
+        console.error('Erro ao inserir usuário: ', error);
+      }
+    }
+
+    inserirUsuario();
+
   }, [])
+  
   const agruparPorData = (jogos) => {
     return jogos.reduce((acc, jogo) => {
 
@@ -42,7 +72,7 @@ export default function App() {
       }
 
       acc[data].sort(ordenacaoHorario);
-      
+
       return acc;
 
     }, {});
@@ -57,7 +87,7 @@ export default function App() {
     }
   });
 
-return (
+  return (
     <ImageBackground style={styles.container}
       source={require('./assets/bg-overlay.png')}>
       <Image style={styles.logo}
