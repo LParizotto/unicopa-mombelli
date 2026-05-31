@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, Text, View, Image } from 'react-native';
 import { IconButton } from 'react-native-paper';
 import { TEAM_FLAGS } from '../utils/flagMapping';
@@ -13,30 +13,76 @@ export default function GameCard({ game }) {
     const jogoBrasil = game.sigla_casa === 'BRA' || game.sigla_fora === 'BRA';
     const semTimesDefinidos = !timeCasa || !timeFora;
 
-    const toggleFavorite = async () => {
-        const previousState = isFavorited;
+    // busca o id do jogo direto do game
+    const idDoJogoAtual = game.id; 
 
+    // verifica se o jogo já tá favoritado
+    useEffect(() => {
+        verificarSeEFAvorito();
+    }, [idDoJogoAtual]);
+
+    const verificarSeEFAvorito = async () => {
+        try {
+            // pega o usuário logado
+            const { data: { user } } = await supabase.auth.getUser();
+            if (!user) return;
+
+            // vê se já tem um favorito com o id do usuário e do jogo
+            const { data, error } = await supabase
+                // consulta a tabela favoritos
+                .from('favoritos')
+                .select('*')
+                // busca o UUID do usuário logado e o id do jogo atual
+                .eq('id_usuario', user.id)
+                .eq('id_jogo', idDoJogoAtual)
+                // 
+                .maybeSingle(); 
+
+            // se der erro lança o catch, se tiver data é porque já tá favoritado
+            if (error) throw error;
+            if (data) setIsFavorited(true);
+        } catch (error) {
+            console.error('Erro ao verificar favoritos:', error.message);
+        }
+    };
+
+    // função pra favoritar ou desfavoritar
+    const toggleFavorite = async () => {
+        // pega o usuário logado na sessão do Supabase
+        const { data: { user } } = await supabase.auth.getUser();
+
+        if (!user) {
+            alert('Você precisa estar logado para favoritar um jogo.');
+            return;
+        }
+
+        // salva o estado anterior caso de erro na hora de atualizar o favorito
+        const previousState = isFavorited;
+        
         setIsFavorited(!previousState);
 
+        // tenta atualizar o favorito no banco, se da erro volta pro estado anterior e mostra o erro
         try {
             if (!previousState) {
+                // inserir nos favoritos
                 const { error } = await supabase
                     .from('favoritos')
                     .insert([
                         {
-                            id_usuario: idDoUsuarioLogado,
-                            id_jogo: idDoJogoAtual
+                            id_usuario: user.id, // UUID do usuário logado
+                            id_jogo: idDoJogoAtual // id do jogo atual
                         }
                     ]);
 
                 if (error) throw error;
 
             } else {
+                // deletar dos favoritos
                 const { error } = await supabase
                     .from('favoritos')
                     .delete()
-                    // .eq('id_usuario', idDoUsuarioLogado) ainda não criei a parte de login do usuário 
-                    // .eq('id_jogo', idDoJogoAtual); msm coisa 
+                    .eq('id_usuario', user.id)
+                    .eq('id_jogo', idDoJogoAtual);
 
                 if (error) throw error;
             }
@@ -48,6 +94,7 @@ export default function GameCard({ game }) {
         }
     };
 
+    // card com o jogo sem timer definidos
     if (semTimesDefinidos) {
         return (
             <View style={styles.jogo}>
