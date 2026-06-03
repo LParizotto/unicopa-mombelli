@@ -3,8 +3,11 @@ import { StyleSheet, Text, Image, ImageBackground, SectionList } from 'react-nat
 import { formatarData } from '../utils/DateFormat';
 import DiaCard from '../components/DiaCard';       
 import { supabase } from '../utils/supabase';     
+import { Button } from 'react-native-paper';
+import PalpitesCadastroScreen from '../screens/PalpitesCadastroScreen'; 
 
-export default function HomeScreen() {
+
+export default function HomeScreen( { navigation } ) {
   const [jogos, setJogos] = useState([]);
 
   useEffect(() => {
@@ -73,6 +76,16 @@ export default function HomeScreen() {
           <DiaCard data={section.title} jogos={section.data} />
         )}
       />
+
+      <Button
+        mode="contained"
+        buttonColor="#f2cc2f"
+        textColor="#131A25"
+        onPress={() => navigation.navigate('Palpites')}
+        style={{ marginVertical: 10 }}
+      >
+        Fazer Palpites
+      </Button>
     </ImageBackground>
   );
 }
