@@ -78,7 +78,7 @@ export default function PalpitesCadastroScreen({ navigation }) {
     }
 
     // manda pra tela de revisão caso true
-    navigation.navigate("PalpitesRevisao", { palpites, jogos });
+    navigation.navigate("Revisao", { palpites, jogos });
   };
 
   if (loading)
@@ -119,6 +119,7 @@ export default function PalpitesCadastroScreen({ navigation }) {
                 <View style={styles.inputsRow}>
                   <TextInput
                     mode="outlined"
+                    textColor="#FFF"
                     style={styles.input}
                     value={palpite.gols_casa || ""}
                     onChangeText={(val) =>
@@ -130,6 +131,7 @@ export default function PalpitesCadastroScreen({ navigation }) {
                   <Text style={styles.vs}>X</Text>
                   <TextInput
                     mode="outlined"
+                    textColor="#FFF"
                     style={styles.input}
                     value={palpite.gols_fora || ""}
                     onChangeText={(val) =>

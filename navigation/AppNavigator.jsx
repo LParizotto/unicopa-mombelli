@@ -5,13 +5,14 @@ import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen'; 
 import HomeScreen from '../screens/HomeScreen'; 
 import PalpitesCadastroScreen from '../screens/PalpitesCadastroScreen'; 
+import PalpitesRevisaoScreen from '../screens/PalpitesRevisaoScreen';
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   return (
     <NavigationContainer>
-      <Stack.Navigator 
+      <Stack.Navigator
         initialRouteName="Login" // inicia sempre na tela de login
         screenOptions={{
           headerShown: false, // desativa a barra de navegação padrão
@@ -20,14 +21,18 @@ export default function AppNavigator() {
       >
         {/* rota pra tela de login */}
         <Stack.Screen name="Login" component={LoginScreen} />
-        
+
         {/* rota pra tela de cadastro */}
         <Stack.Screen name="Register" component={RegisterScreen} />
-        
+
         {/* rota pra home */}
         <Stack.Screen name="Home" component={HomeScreen} />
 
-        <Stack.Screen name="Palpites" component={PalpitesCadastroScreen}/>
+        {/* rota pra tela de palpites */}
+        <Stack.Screen name="Palpites" component={PalpitesCadastroScreen} />
+        
+        {/* rota pra tela de revisao de palpites */}
+        <Stack.Screen name="Revisao" component={PalpitesRevisaoScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
