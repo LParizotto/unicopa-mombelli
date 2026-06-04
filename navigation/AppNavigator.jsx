@@ -6,6 +6,7 @@ import RegisterScreen from '../screens/RegisterScreen';
 import HomeScreen from '../screens/HomeScreen'; 
 import PalpitesCadastroScreen from '../screens/PalpitesCadastroScreen'; 
 import PalpitesRevisaoScreen from '../screens/PalpitesRevisaoScreen';
+import PalpitesScreen from '../screens/PalpitesScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -30,9 +31,12 @@ export default function AppNavigator() {
 
         {/* rota pra tela de palpites */}
         <Stack.Screen name="Palpites" component={PalpitesCadastroScreen} />
-        
+
         {/* rota pra tela de revisao de palpites */}
         <Stack.Screen name="Revisao" component={PalpitesRevisaoScreen} />
+
+        {/* rota pra tela de palpites do usuário */}
+        <Stack.Screen name="MeusPalpites" component={PalpitesScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );

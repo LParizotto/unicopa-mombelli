@@ -44,10 +44,7 @@ export default function PalpitesRevisaoScreen({ route, navigation }) {
 
       if (error) throw error;
 
-      Alert.alert("Deu boa", "Seus palpites foram registrados com sucesso.", [
-        { text: "OK", onPress: () => navigation.navigate("Home") },
-      ]);
-    } catch (error) {
+      Alert.alert("Deu boa", "Seus palpites foram registrados com sucesso.");
       Alert.alert(
         "Erro",
         "Não foi possível salvar os palpites: " + error.message,

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, Image, ImageBackground, SectionList } from 'react-native';
+import { StyleSheet, Text, Image, ImageBackground, SectionList, View } from 'react-native';
 import { formatarData } from '../utils/DateFormat';
 import DiaCard from '../components/DiaCard';       
 import { supabase } from '../utils/supabase';     
 import { Button } from 'react-native-paper';
 import PalpitesCadastroScreen from '../screens/PalpitesCadastroScreen'; 
-
+import PalpitesScreen from '../screens/PalpitesScreen';
 
 export default function HomeScreen( { navigation } ) {
   const [jogos, setJogos] = useState([]);
@@ -77,6 +77,7 @@ export default function HomeScreen( { navigation } ) {
         )}
       />
 
+    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
       <Button
         mode="contained"
         buttonColor="#f2cc2f"
@@ -86,6 +87,16 @@ export default function HomeScreen( { navigation } ) {
       >
         Fazer Palpites
       </Button>
+      <Button
+        mode="contained"
+        buttonColor="#f2cc2f"
+        textColor="#131A25"
+        onPress={() => navigation.navigate('MeusPalpites')}
+        style={{ marginVertical: 10 }}
+      >
+        Meus Palpites
+      </Button>
+    </View>
     </ImageBackground>
   );
 }
