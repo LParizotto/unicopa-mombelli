@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, Image, ImageBackground, SectionList, View } from 'react-native';
+import { StyleSheet, Text, Image, ImageBackground, SectionList, View, ScrollView, TouchableOpacity } from 'react-native';
 import { formatarData } from '../utils/DateFormat';
 import DiaCard from '../components/DiaCard';       
 import { supabase } from '../utils/supabase';     
 import { Button } from 'react-native-paper';
-import PalpitesCadastroScreen from '../screens/PalpitesCadastroScreen'; 
-import PalpitesScreen from '../screens/PalpitesScreen';
 
 export default function HomeScreen( { navigation } ) {
   const [jogos, setJogos] = useState([]);
+  const [grupoSelecionado, setGrupoSelecionado] = useState('Todos');
+
+  const listaGrupos = ['Todos', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
   useEffect(() => {
     async function carregarJogos() {
@@ -23,11 +24,10 @@ export default function HomeScreen( { navigation } ) {
     }
 
     carregarJogos();
-
   }, []);
 
-  const agruparPorData = (jogos) => {
-    return jogos.reduce((acc, jogo) => {
+  const agruparPorData = (jogosParaAgrupar) => {
+    return jogosParaAgrupar.reduce((acc, jogo) => {
       const data = formatarData(jogo.data_brasilia);
 
       if (!acc[data]) {
@@ -47,7 +47,11 @@ export default function HomeScreen( { navigation } ) {
     }, {});
   };
 
-  const jogosAgrupados = agruparPorData(jogos);
+  const jogosFiltrados = grupoSelecionado === 'Todos'
+    ? jogos
+    : jogos.filter(jogo => jogo.grupo === grupoSelecionado);
+
+  const jogosAgrupados = agruparPorData(jogosFiltrados);
 
   const jogosTratados = Object.keys(jogosAgrupados).map((data) => {
     return {
@@ -68,6 +72,28 @@ export default function HomeScreen( { navigation } ) {
 
       <Text style={styles.title}>CALENDÁRIO</Text>
 
+      <View style={styles.containerFiltro}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.scrollFiltro}>
+          {listaGrupos.map((grupo) => (
+            <TouchableOpacity
+              key={grupo}
+              style={[
+                styles.botaoFiltro,
+                grupoSelecionado === grupo && styles.botaoAtivo
+              ]}
+              onPress={() => setGrupoSelecionado(grupo)}
+            >
+              <Text style={[
+                styles.textoFiltro,
+                grupoSelecionado === grupo && styles.textoAtivo
+              ]}>
+                {grupo === 'Todos' ? 'Todos' : `Grupo ${grupo}`}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
+      </View>
+
       <SectionList
         sections={jogosTratados}
         keyExtractor={(item) => item.id.toString()}
@@ -75,28 +101,32 @@ export default function HomeScreen( { navigation } ) {
         renderSectionHeader={({ section }) => (
           <DiaCard data={section.title} jogos={section.data} />
         )}
+        style={styles.lista}
+        ListEmptyComponent={
+          <Text style={styles.listaVazia}>Nenhum jogo para o Grupo {grupoSelecionado}.</Text>
+        }
       />
 
-    <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16 }}>
-      <Button
-        mode="contained"
-        buttonColor="#f2cc2f"
-        textColor="#131A25"
-        onPress={() => navigation.navigate('Palpites')}
-        style={{ marginVertical: 10 }}
-      >
-        Fazer Palpites
-      </Button>
-      <Button
-        mode="contained"
-        buttonColor="#f2cc2f"
-        textColor="#131A25"
-        onPress={() => navigation.navigate('MeusPalpites')}
-        style={{ marginVertical: 10 }}
-      >
-        Meus Palpites
-      </Button>
-    </View>
+      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 16, marginBottom: 20 }}>
+        <Button
+          mode="contained"
+          buttonColor="#f2cc2f"
+          textColor="#131A25"
+          onPress={() => navigation.navigate('Palpites')}
+          style={{ marginVertical: 10 }}
+        >
+          Fazer Palpites
+        </Button>
+        <Button
+          mode="contained"
+          buttonColor="#f2cc2f"
+          textColor="#131A25"
+          onPress={() => navigation.navigate('MeusPalpites')}
+          style={{ marginVertical: 10 }}
+        >
+          Meus Palpites
+        </Button>
+      </View>
     </ImageBackground>
   );
 }
@@ -119,4 +149,45 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: 'white',
   },
+  lista: {
+    width: '100%',
+    paddingHorizontal: 16,
+  },
+containerFiltro: {
+    width: '100%',
+    height: 50,
+    marginTop: 15,
+    marginBottom: 10,
+  },
+  scrollFiltro: {
+    paddingHorizontal: 16, 
+    gap: 10,
+    alignItems: 'center', 
+  },
+  botaoFiltro: {
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+    backgroundColor: '#131A25',
+    borderWidth: 1,
+    borderColor: '#1e2d3d',
+  },
+  botaoAtivo: {
+    backgroundColor: '#f2cc2f', 
+    borderColor: '#f2cc2f',
+  },
+  textoFiltro: {
+    color: '#8fa3b8',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  textoAtivo: {
+    color: '#131A25', 
+  },
+  listaVazia: {
+    color: '#8fa3b8',
+    textAlign: 'center',
+    marginTop: 30,
+    fontSize: 16,
+  }
 });
